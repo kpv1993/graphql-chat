@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 4d908484c8dd011f9da0221036f564c5
+ * @relayHash a6cf7fff94058b6a8e9701ff52f9b2b0
  */
 
 /* eslint-disable */
@@ -10,21 +10,21 @@
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
 type LinkList_viewer$ref = any;
-export type LinkListPageQueryVariables = {||};
-export type LinkListPageQueryResponse = {|
+export type CreateChatQueryVariables = {||};
+export type CreateChatQueryResponse = {|
   +viewer: ?{|
     +$fragmentRefs: LinkList_viewer$ref
   |}
 |};
-export type LinkListPageQuery = {|
-  variables: LinkListPageQueryVariables,
-  response: LinkListPageQueryResponse,
+export type CreateChatQuery = {|
+  variables: CreateChatQueryVariables,
+  response: CreateChatQueryResponse,
 |};
 */
 
 
 /*
-query LinkListPageQuery {
+query CreateChatQuery {
   viewer {
     ...LinkList_viewer
     id
@@ -81,7 +81,7 @@ return {
   "kind": "Request",
   "fragment": {
     "kind": "Fragment",
-    "name": "LinkListPageQuery",
+    "name": "CreateChatQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": [],
@@ -106,7 +106,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "LinkListPageQuery",
+    "name": "CreateChatQuery",
     "argumentDefinitions": [],
     "selections": [
       {
@@ -221,13 +221,13 @@ return {
   },
   "params": {
     "operationKind": "query",
-    "name": "LinkListPageQuery",
+    "name": "CreateChatQuery",
     "id": null,
-    "text": "query LinkListPageQuery {\n  viewer {\n    ...LinkList_viewer\n    id\n  }\n}\n\nfragment LinkList_viewer on Viewer {\n  allChats(last: 100, orderBy: createdAt_ASC) {\n    edges {\n      node {\n        ...Link_link\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment Link_link on Chat {\n  id\n  from\n  content\n}\n",
+    "text": "query CreateChatQuery {\n  viewer {\n    ...LinkList_viewer\n    id\n  }\n}\n\nfragment LinkList_viewer on Viewer {\n  allChats(last: 100, orderBy: createdAt_ASC) {\n    edges {\n      node {\n        ...Link_link\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment Link_link on Chat {\n  id\n  from\n  content\n}\n",
     "metadata": {}
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '2c2833bffc47f6918a457dc5fe6b01ca';
+(node/*: any*/).hash = 'e64b50501ca8b623b9b0a3297e1b8e95';
 module.exports = node;

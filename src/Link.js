@@ -16,6 +16,7 @@ class Link extends Component {
 
 export default createFragmentContainer(Link, graphql`
 fragment Link_link on Chat{
+  id
   from
   content
 }`)

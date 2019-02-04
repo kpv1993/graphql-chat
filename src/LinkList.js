@@ -17,7 +17,7 @@ class LinkList extends Component{
 
 export default createFragmentContainer(LinkList, graphql`
 fragment LinkList_viewer on Viewer{
-  allChats(last: 100, orderBy: createdAt_DESC) @connection(key:"LinkList_allChats", filters:[]){
+  allChats(last: 100, orderBy: createdAt_ASC) @connection(key:"LinkList_allChats", filters:[]){
     edges{
       node{
         ...Link_link

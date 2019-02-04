@@ -1,3 +1,5 @@
+import {SubscriptionClient} from 'subscriptions-transport-ws'
+
 const {
   Environment,
   Network,
@@ -7,11 +9,10 @@ const {
 
 const store = new Store(new RecordSource())
 
-const network = Network.create((operation, variables) => {
-
+const fetchQuery = (operation, variables) => {
   return fetch('https://api.graph.cool/relay/v1/cjrekxlxj4vxd0194udu0jbes', {
     method: 'POST',
-    headers:{
+    headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
@@ -22,7 +23,20 @@ const network = Network.create((operation, variables) => {
   }).then(response => {
     return response.json()
   })
-})
+}
+
+// 2
+const setupSubscription = (config, variables, cacheConfig, observer) => {
+  const query = config.text
+
+  const subscriptionClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/cjrekxlxj4vxd0194udu0jbes', {reconnect: true})
+  subscriptionClient.subscribe({query, variables}, (error, result) => {
+    observer.onNext({data: result})
+  })
+}
+
+// 3
+const network = Network.create(fetchQuery, setupSubscription)
 
 const environment = new Environment({
   network,

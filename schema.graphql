@@ -536,3 +536,29 @@ type Viewer {
   hello(name: String): HelloPayload
   id: ID
 }
+
+type Subscription{
+  Chat(filter: ChatSubscriptionFilter): ChatSubscriptionPayload
+}
+
+input ChatSubscriptionFilter {
+  mutation_in: [_ModelMutationType!]
+}
+
+type ChatSubscriptionPayload {
+  mutation: _ModelMutationType!
+  node: Chat
+  updatedFields: [String!]
+  previousValues: ChatPreviousValues
+}
+
+enum _ModelMutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type ChatPreviousValues{
+createdAt: DateTime!
+id: ID!
+}
