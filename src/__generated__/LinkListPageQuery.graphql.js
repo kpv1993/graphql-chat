@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 4d908484c8dd011f9da0221036f564c5
+ * @relayHash 1337c5a5db750073373dc75b158e7b8b
  */
 
 /* eslint-disable */
@@ -32,6 +32,7 @@ query LinkListPageQuery {
 }
 
 fragment LinkList_viewer on Viewer {
+  id
   allChats(last: 100, orderBy: createdAt_ASC) {
     edges {
       node {
@@ -56,7 +57,14 @@ fragment Link_link on Chat {
 */
 
 const node/*: ConcreteRequest*/ = (function(){
-var v0 = [
+var v0 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
+},
+v1 = [
   {
     "kind": "Literal",
     "name": "last",
@@ -69,14 +77,7 @@ var v0 = [
     "value": "createdAt_ASC",
     "type": "ChatOrderBy"
   }
-],
-v1 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-};
+];
 return {
   "kind": "Request",
   "fragment": {
@@ -118,12 +119,13 @@ return {
         "concreteType": "Viewer",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "allChats",
             "storageKey": "allChats(last:100,orderBy:\"createdAt_ASC\")",
-            "args": (v0/*: any*/),
+            "args": (v1/*: any*/),
             "concreteType": "ChatConnection",
             "plural": false,
             "selections": [
@@ -145,7 +147,7 @@ return {
                     "concreteType": "Chat",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/),
+                      (v0/*: any*/),
                       {
                         "kind": "ScalarField",
                         "alias": null,
@@ -209,12 +211,11 @@ return {
             "kind": "LinkedHandle",
             "alias": null,
             "name": "allChats",
-            "args": (v0/*: any*/),
+            "args": (v1/*: any*/),
             "handle": "connection",
             "key": "LinkList_allChats",
             "filters": []
-          },
-          (v1/*: any*/)
+          }
         ]
       }
     ]
@@ -223,7 +224,7 @@ return {
     "operationKind": "query",
     "name": "LinkListPageQuery",
     "id": null,
-    "text": "query LinkListPageQuery {\n  viewer {\n    ...LinkList_viewer\n    id\n  }\n}\n\nfragment LinkList_viewer on Viewer {\n  allChats(last: 100, orderBy: createdAt_ASC) {\n    edges {\n      node {\n        ...Link_link\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment Link_link on Chat {\n  id\n  from\n  content\n}\n",
+    "text": "query LinkListPageQuery {\n  viewer {\n    ...LinkList_viewer\n    id\n  }\n}\n\nfragment LinkList_viewer on Viewer {\n  id\n  allChats(last: 100, orderBy: createdAt_ASC) {\n    edges {\n      node {\n        ...Link_link\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n\nfragment Link_link on Chat {\n  id\n  from\n  content\n}\n",
     "metadata": {}
   }
 };

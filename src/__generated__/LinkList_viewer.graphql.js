@@ -12,6 +12,7 @@ type Link_link$ref = any;
 import type { FragmentReference } from "relay-runtime";
 declare export opaque type LinkList_viewer$ref: FragmentReference;
 export type LinkList_viewer = {|
+  +id: ?string,
   +allChats: ?{|
     +edges: ?$ReadOnlyArray<?{|
       +node: ?{|
@@ -42,6 +43,13 @@ const node/*: ReaderFragment*/ = {
   },
   "argumentDefinitions": [],
   "selections": [
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "id",
+      "args": null,
+      "storageKey": null
+    },
     {
       "kind": "LinkedField",
       "alias": "allChats",
@@ -122,5 +130,5 @@ const node/*: ReaderFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = '48f88ea8a86af1afa4452cbd3dc7e07f';
+(node/*: any*/).hash = 'c52ff353492b8458f91a8342dfe54ba0';
 module.exports = node;

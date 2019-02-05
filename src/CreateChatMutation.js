@@ -17,11 +17,11 @@ mutation CreateChatMutation($input: CreateChatInput!){
 }`
 
 let temp =0
-export default (from, content, callback) => {
+export default (from, content, viewerId,callback) => {
   const variables = {
     input: {
-      from,
-      content,
+      content:content,
+      from:from,
       clientMutationId:""
     },
   }
@@ -30,6 +30,15 @@ export default (from, content, callback) => {
     environment,{
       mutation,
       variables,
+      configs: [{
+              type: 'RANGE_ADD',
+              parentID: viewerId,
+              connectionInfo: [{
+                key: 'LinkList_allChats',
+                rangeBehavior: 'append',
+              }],
+              edgeName: 'ChatEdge'
+            }],
 
       onCompleted: (response)=>{
         console.log('response: ', response);
@@ -37,23 +46,6 @@ export default (from, content, callback) => {
         callback(response);
 },
 
-      // optimisticUpdater: proxyStore => {
-        // 1 - create the `newPost` as a mock that can be added to the store
-//     const ids = 'client:newChat:' + temp++
-//     const newPost = proxyStore.create(ids, 'Chat')
-//     newPost.setValue(ids, 'id')
-//     newPost.setValue(from, 'from')
-//     newPost.setValue(content, 'content')
-//   // 2 - add `newPost` to the store
-//     const viewerProxy = proxyStore.getRoot()
-//     const connection = ConnectionHandler.getConnection(viewerProxy, 'LinkList_allChats', {
-//   last: 100,
-//   orderBy: 'createdAt_ASC'
-// })
-//     if (connection) {
-//       ConnectionHandler.insertEdgeAfter(connection, newPost)
-//     }
-      // },
       updater: proxyStore => {
 //
 //           // storeDebugger.dump(proxyStore)
@@ -62,13 +54,14 @@ export default (from, content, callback) => {
         console.log('updater: payload : ',payload);
         const newReport = payload.getLinkedRecord('chat');
         console.log('updater: newReport : ',newReport);
-        const storeRoot = proxyStore.getRoot();
+        const storeRoot = proxyStore.get(viewerId);
         console.log('updater: storeRootss : ',storeRoot);
-        // storeRoot.setValue(payload.getLinkedRecord('chat').getValue('from'), from);
+
         // storeRoot.setLinkedRecord()
-        // console.log('updater: storeRootinggg : ',storeRoot);
+        console.log('updater: storeRootinggg : ',storeRoot);
+
         const connection = ConnectionHandler.getConnection(
-          payload,
+          storeRoot,
           'LinkList_allChats'
         );
         console.log('updater: connection : ',connection);
@@ -79,19 +72,42 @@ export default (from, content, callback) => {
           'ChatEdge'
         );
         console.log('updater: newEdge : ',newEdge);
-        ConnectionHandler.insertEdgeBefore(connection, newEdge);
-//   //       const newEdgeNode = proxyStore.getRootField('createChat');
-//   //       console.log('updater: newEdgeNode : ',newEdgeNode);
-//   // // since 'AllPosts' is under Root
-//   // const prevPosts = proxyStore.getRoot().getLinkedRecord('chat');
-//   // console.log('updater: prevPosts : ',prevPosts);
-//   // const prevEdgeNodes = prevPosts && prevPosts.getLinkedRecords('edges');
-//   // console.log('updater: prevEdgeNodes : ',prevEdgeNodes);
-//   //
-//   // if (prevEdgeNodes) {
-//   //   prevEdgeNodes.push(newEdgeNode); // You might want to append or prepend
-//   //   prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
-//   // }
+        ConnectionHandler.insertEdgeAfter(connection, newEdge);
+
+
+
+const newEdgeNode = proxyStore.getRootField('createChat');
+// since 'AllPosts' is under Root
+const prevPosts = proxyStore.getRoot(viewerId).getLinkedRecord('allChats');
+const prevEdgeNodes = prevPosts && prevPosts.getValue('edges');
+if (prevEdgeNodes) {
+   prevEdgeNodes.push(newEdgeNode);
+  // You might want to append or prepend
+  prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
+}
+
+
+        // const newEdge = proxyStore.getRootField('createChat').getLinkedRecord('chat');
+        // console.log('updater: newEdge : ',newEdge);
+        // if (newEdge) {
+        //   if (!viewerId) {
+        //     // eslint-disable-next-line
+        //     console.log('maybe you forgot to pass a parentId: ');
+        //     return;
+        //   }
+        //   const parentProxy = proxyStore.get(viewerId);
+        //   console.log('updater: parentProxy : ',parentProxy);
+        //   const connection = ConnectionHandler.getConnection(parentProxy, 'LinkList_allChats', {last: 100, orderBy: 'createdAt_ASC'});
+        //   console.log('updater: connection : ',connection);
+        //
+        //   if (!connection) { // eslint-disable-next-line
+        //     console.log('maybe this connection is not in relay store yet:', 'LinkList_allChats');
+        //      return;
+        //    }
+        //         ConnectionHandler.insertEdgeAfter(connection, newEdge);
+        //
+        //     }
+
 },
   // console.log('one:',prevPosts)
 

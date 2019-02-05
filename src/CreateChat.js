@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { ROOT_ID } from 'relay-runtime';
 import CreateChatMutation from './CreateChatMutation'
 import {
   QueryRenderer,
@@ -12,11 +13,13 @@ import NewChatSubscription from './NewChatSubscription'
 const CreateChatQuery = graphql`
 query CreateChatQuery {
   viewer {
+    id
     ...LinkList_viewer
   }
 }
 `
 var refetching = true;
+var viewerId = null;
 
 class  CreateChat extends Component {
   state = {
@@ -30,7 +33,7 @@ class  CreateChat extends Component {
     // const {froms, content} = this.state
     const from = window.prompt('username');
     from && this.setState({ from });
-    NewChatSubscription()
+    // NewChatSubscription()
   }
 
   render() {
@@ -46,37 +49,46 @@ class  CreateChat extends Component {
           if (error) {
             return <div>{error.message}</div>
           } else if (props) {
-            return <LinkList viewer={props.viewer} />
+            return(
+              <div>
+              <div>
+              <LinkList viewer={props.viewer} />
+              </div>
+              <div>
+                <div className='flex flex-column mt3'>
+                  <input
+                    className='mb2'
+                    value={this.state.content}
+                    onChange={(e) => this.setState({ content: e.target.value })}
+                    type='text'
+                    placeholder='Message'
+                  />
+                </div>
+                <div
+                  className='button'
+                  onClick={() => this._createLink(props.viewer.id)}>
+                  submit
+                </div>
+              </div>
+              </div>
+            )
+            // <LinkList viewer={props.viewer} />
           }
           return <div>Loading</div>
         }}
       />
       </div>
 
-      <div>
-        <div className='flex flex-column mt3'>
-          <input
-            className='mb2'
-            value={this.state.content}
-            onChange={(e) => this.setState({ content: e.target.value })}
-            type='text'
-            placeholder='Message'
-          />
-        </div>
-        <div
-          className='button'
-          onClick={() => this._createLink()}>
-          submit
-        </div>
-      </div>
+
       </div>
     )
 
   }
 
-  _createLink = () => {
+  _createLink = (ids) => {
     const {from, content} = this.state
-    CreateChatMutation(from, content, (response)=>
+    console.log('from and content: ',from);
+    CreateChatMutation(from, content,ids, (response)=>
     {refetching = false;
     })
 
