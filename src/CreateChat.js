@@ -33,7 +33,6 @@ class  CreateChat extends Component {
     // const {froms, content} = this.state
     const from = window.prompt('username');
     from && this.setState({ from });
-    // NewChatSubscription()
   }
 
   render() {
@@ -44,11 +43,15 @@ class  CreateChat extends Component {
       <QueryRenderer
         environment={environment}
         query={CreateChatQuery}
-        variables={{refetch: refetching}}
         render={({error, props}) => {
+
           if (error) {
             return <div>{error.message}</div>
           } else if (props) {
+            if(viewerId == null){
+              NewChatSubscription(props.viewer.id)
+            }
+            viewerId = props.viewer.id;
             return(
               <div>
               <div>
@@ -86,11 +89,13 @@ class  CreateChat extends Component {
   }
 
   _createLink = (ids) => {
+
     const {from, content} = this.state
     console.log('from and content: ',from);
     CreateChatMutation(from, content,ids, (response)=>
     {refetching = false;
     })
+
 
   }
 }

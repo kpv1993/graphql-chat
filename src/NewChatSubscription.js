@@ -10,11 +10,11 @@ import LinkList from './LinkList'
 
 const newChatSubscription = graphql`
   subscription NewChatSubscription {
-    # 1
+
     Chat (filter: {
       mutation_in: [CREATED]
     }) {
-      # 2
+
       node {
         id
         from
@@ -25,22 +25,7 @@ const newChatSubscription = graphql`
   }
 `
 
-function sharedUpdater(store, user, newEdge) {
-  // Get the current user record from the store
-  const userProxy = store.get(user.id);
-
-  // Get the user's Todo List using ConnectionHandler helper
-  const conn = ConnectionHandler.getConnection(
-    userProxy,
-    'LinkList_allChats', // This is the connection identifier, defined here
-    // https://github.com/relayjs/relay-examples/blob/master/todo/js/components/TodoList.js#L68
-  );
-
-  // Insert the new todo into the Todo List connection
-  ConnectionHandler.insertEdgeAfter(conn, newEdge);
-}
-
-export default () => {
+export default (viewerId) => {
 
   const subscriptionConfig = {
     subscription: newChatSubscription,
@@ -54,15 +39,39 @@ export default () => {
       // console.log(`p value:`, p)
       //
       // sharedUpdater(proxyStore,user, newChat)
-      const newEdgeNode = proxyStore.getRootField('createChat');
-// since 'AllPosts' is under Root
-const prevPosts = proxyStore.getRoot().getLinkedRecord('chat');
-const prevEdgeNodes = prevPosts && prevPosts.getValue('edges');
-if (prevEdgeNodes) {
-  prevEdgeNodes.push(newEdgeNode); // You might want to append or prepend
-  prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
-    }
-  },
+//       const newEdgeNode = proxyStore.getRootField('createChat');
+// // since 'AllPosts' is under Root
+// const prevPosts = proxyStore.getRoot().getLinkedRecord('chat');
+// const prevEdgeNodes = prevPosts && prevPosts.getValue('edges');
+// if (prevEdgeNodes) {
+//   prevEdgeNodes.push(newEdgeNode); // You might want to append or prepend
+//   prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
+//     }
+//   },
+//     onError: error => console.log(`An error occured:`, error)
+//   }
+
+      const createVoteField = proxyStore.getRootField('Chat')
+      console.log('updaterSub: createVoteField : ',createVoteField);
+      const newVote = createVoteField.getLinkedRecord('node')
+      console.log('updaterSub: newVote : ',newVote);
+
+      const link = proxyStore.get(viewerId)
+      console.log('updaterSub: link : ',link);
+      const connection = ConnectionHandler.getConnection(
+        link,
+        'LinkList_allChats'
+      );
+      // console.log('updaterSub: connection : ',connection);
+      const newEdge = ConnectionHandler.createEdge(
+        proxyStore,
+        connection,
+        newVote,
+        'ChatEdge'
+      );
+      console.log('updaterSub: newEdge : ',newEdge);
+      ConnectionHandler.insertEdgeAfter(connection, newEdge);
+    },
     onError: error => console.log(`An error occured:`, error)
   }
 
@@ -70,5 +79,4 @@ if (prevEdgeNodes) {
     environment,
     subscriptionConfig
   )
-
 }

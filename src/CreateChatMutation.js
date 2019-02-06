@@ -30,15 +30,6 @@ export default (from, content, viewerId,callback) => {
     environment,{
       mutation,
       variables,
-      configs: [{
-              type: 'RANGE_ADD',
-              parentID: viewerId,
-              connectionInfo: [{
-                key: 'LinkList_allChats',
-                rangeBehavior: 'append',
-              }],
-              edgeName: 'ChatEdge'
-            }],
 
       onCompleted: (response)=>{
         console.log('response: ', response);
@@ -50,41 +41,32 @@ export default (from, content, viewerId,callback) => {
 //
 //           // storeDebugger.dump(proxyStore)
 //
-        const payload = proxyStore.getRootField('createChat');
-        console.log('updater: payload : ',payload);
-        const newReport = payload.getLinkedRecord('chat');
-        console.log('updater: newReport : ',newReport);
-        const storeRoot = proxyStore.get(viewerId);
-        console.log('updater: storeRootss : ',storeRoot);
+        // const payload = proxyStore.getRootField('createChat');
+        // const newReport = payload.getLinkedRecord('chat');
+        // const storeRoot = proxyStore.get(viewerId);
+        // const connection = ConnectionHandler.getConnection(
+        //   storeRoot,
+        //   'LinkList_allChats'
+        // );
+        // const newEdge = ConnectionHandler.createEdge(
+        //   proxyStore,
+        //   connection,
+        //   newReport,
+        //   'ChatEdge'
+        // );
+        // ConnectionHandler.insertEdgeAfter(connection, newEdge);
+//         const storeRoots = proxyStore.get(viewerId).getLinkedRecord('edges').getLinkedRecord('node');
+// console.log('updater: storeRoot : ',storeRoot);
 
-        // storeRoot.setLinkedRecord()
-        console.log('updater: storeRootinggg : ',storeRoot);
-
-        const connection = ConnectionHandler.getConnection(
-          storeRoot,
-          'LinkList_allChats'
-        );
-        console.log('updater: connection : ',connection);
-        const newEdge = ConnectionHandler.createEdge(
-          proxyStore,
-          connection,
-          payload,
-          'ChatEdge'
-        );
-        console.log('updater: newEdge : ',newEdge);
-        ConnectionHandler.insertEdgeAfter(connection, newEdge);
-
-
-
-const newEdgeNode = proxyStore.getRootField('createChat');
-// since 'AllPosts' is under Root
-const prevPosts = proxyStore.getRoot(viewerId).getLinkedRecord('allChats');
-const prevEdgeNodes = prevPosts && prevPosts.getValue('edges');
-if (prevEdgeNodes) {
-   prevEdgeNodes.push(newEdgeNode);
-  // You might want to append or prepend
-  prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
-}
+// const newEdgeNode = proxyStore.getRootField('createChat');
+// // since 'AllPosts' is under Root
+// const prevPosts = proxyStore.getRoot(viewerId).getLinkedRecord('allChats');
+// const prevEdgeNodes = prevPosts && prevPosts.getValue('edges');
+// if (prevEdgeNodes) {
+//    prevEdgeNodes.push(newEdgeNode);
+//   // You might want to append or prepend
+//   prevPosts.setLinkedRecords(prevEdgeNodes, 'edges');
+// }
 
 
         // const newEdge = proxyStore.getRootField('createChat').getLinkedRecord('chat');
